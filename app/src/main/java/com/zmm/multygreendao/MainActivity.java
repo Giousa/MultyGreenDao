@@ -84,8 +84,6 @@ public class MainActivity extends AppCompatActivity {
         mMyAdapter = new MyAdapter(mCustomers);
         mRecycleview.setAdapter(mMyAdapter);
 
-        mKeyId = mMyAdapter.getFirstKeyId();
-
         mMyAdapter.setOnItemClickListener(new MyAdapter.OnItemClickListener() {
             @Override
             public void OnItemClick(int position,long keyId) {
@@ -119,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void deleteData() {
         LogUtils.d("position = "+mDeletePosition+",keyId = "+mKeyId);
-        if(mDeletePosition < 0){
+        if(mDeletePosition < 0 || mMyAdapter.getLayoutPosition() < 0){
             ToastUtils.SimpleToast("请选中需要删除的条目");
             return;
         }

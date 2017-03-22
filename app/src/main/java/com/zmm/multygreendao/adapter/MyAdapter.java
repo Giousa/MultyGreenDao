@@ -24,7 +24,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
     private List<Customer> mCustomers;
     private int mLayoutPosition = -1;
-    private long mFirstKeyId;
     private MyViewHolder mMyViewHolder;
 
     public MyAdapter(List<Customer> customers) {
@@ -84,9 +83,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         return mCustomers.size();
     }
 
-    public long getFirstKeyId() {
-        mFirstKeyId = mCustomers.get(0).getId();
-        return mFirstKeyId;
+    public int getLayoutPosition() {
+        return mLayoutPosition;
     }
 
     public void add(Customer customer, int position) {
@@ -95,6 +93,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         }
         mCustomers.add(position,customer);
         notifyItemInserted(position);
+
+        updateData(position);
+
     }
 
     public void delete(int position){
@@ -104,6 +105,21 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         }
         mCustomers.remove(position);
         notifyDataSetChanged();
+
+        updateData(position);
+
+    }
+
+    private void updateData(int position) {
+        mLayoutPosition = -1;
+        //更改状态
+        if(position == mLayoutPosition){
+            mMyViewHolder.tv_item.setBackgroundResource(R.drawable.bg_unselect);
+            mMyViewHolder.tv_item.setTextColor(Color.RED);
+        }else{
+            mMyViewHolder.tv_item.setBackgroundResource(R.drawable.bg_select);
+            mMyViewHolder.tv_item.setTextColor(Color.BLUE);
+        }
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder{
@@ -112,6 +128,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
         public MyViewHolder(View itemView) {
             super(itemView);
+
             tv_item = (TextView) itemView.findViewById(R.id.tv_item);
         }
 
@@ -122,8 +139,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         public void setData(int position) {
             itemView.setTag(position);
             tv_item.setText(mCustomers.get(position).getName());
-            tv_item.setBackgroundResource(R.drawable.bg_select);
-            tv_item.setTextColor(Color.BLUE);
         }
     }
+
 }
