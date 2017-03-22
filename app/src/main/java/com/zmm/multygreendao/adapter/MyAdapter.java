@@ -87,14 +87,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     }
 
     public void add(Customer customer, int position) {
-        if(mLayoutPosition == position){
-            mLayoutPosition = -1;
-        }
         mCustomers.add(position,customer);
         notifyItemInserted(position);
-
-        updateData(position);
-
+        update(position);
     }
 
     public void delete(int position){

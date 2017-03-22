@@ -1,6 +1,7 @@
 package com.zmm.multygreendao;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,6 +18,7 @@ import com.zmm.multygreendao.adapter.MyAdapter;
 import com.zmm.multygreendao.gen.CustomerDao;
 import com.zmm.multygreendao.manager.GreenDaoManager;
 import com.zmm.multygreendao.model.Customer;
+import com.zmm.multygreendao.model.Order;
 import com.zmm.multygreendao.utils.LogUtils;
 import com.zmm.multygreendao.utils.ToastUtils;
 
@@ -38,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     CheckBox mSex;
     @InjectView(R.id.recycleview)
     RecyclerView mRecycleview;
+
+    private final String KEY_ID = "KEYID";
 
     private InputMethodManager mInputMethodManager;
     private boolean mGender;
@@ -74,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
         mCustomers = mCustomerDao.loadAll();
 
-        if(mCustomers == null || mCustomers.size() == 0){
+        if (mCustomers == null || mCustomers.size() == 0) {
             return;
         }
 
@@ -86,8 +90,8 @@ public class MainActivity extends AppCompatActivity {
 
         mMyAdapter.setOnItemClickListener(new MyAdapter.OnItemClickListener() {
             @Override
-            public void OnItemClick(int position,long keyId) {
-                LogUtils.d("keyId = "+keyId);
+            public void OnItemClick(int position, long keyId) {
+                LogUtils.d("keyId = " + keyId);
                 mKeyId = keyId;
                 mSelectPosition = position;
             }
@@ -95,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @OnClick({R.id.add, R.id.update, R.id.query, R.id.delete})
+    @OnClick({R.id.add, R.id.update, R.id.query, R.id.delete,R.id.order})
     public void onClick(View view) {
 
         hideKeyBoard();
@@ -113,7 +117,27 @@ public class MainActivity extends AppCompatActivity {
             case R.id.delete:
                 deleteData();
                 break;
+            case R.id.order:
+                jumpOrderAct();
+                break;
         }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        mMyAdapter.update(mSelectPosition);
+    }
+
+    private void jumpOrderAct() {
+        if (mSelectPosition < 0 || mMyAdapter.getLayoutPosition() < 0) {
+            ToastUtils.SimpleToast("请选中条目");
+            return;
+        }
+
+        Intent intent = new Intent(MainActivity.this, OrderActivity.class);
+        intent.putExtra(KEY_ID,mKeyId);
+        startActivity(intent);
     }
 
     /**
@@ -131,8 +155,8 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        if(mSelectPosition < 0 || mMyAdapter.getLayoutPosition() < 0){
-            ToastUtils.SimpleToast("请选中需要删除的条目");
+        if (mSelectPosition < 0 || mMyAdapter.getLayoutPosition() < 0) {
+            ToastUtils.SimpleToast("请选中需要更新的条目");
             return;
         }
         Customer customer = mCustomerDao.load(mKeyId);
@@ -146,8 +170,8 @@ public class MainActivity extends AppCompatActivity {
      * 删除数据
      */
     private void deleteData() {
-        LogUtils.d("position = "+ mSelectPosition +",keyId = "+mKeyId);
-        if(mSelectPosition < 0 || mMyAdapter.getLayoutPosition() < 0){
+        LogUtils.d("position = " + mSelectPosition + ",keyId = " + mKeyId);
+        if (mSelectPosition < 0 || mMyAdapter.getLayoutPosition() < 0) {
             ToastUtils.SimpleToast("请选中需要删除的条目");
             return;
         }
@@ -163,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
         if (mCustomers != null && mCustomers.size() > 0) {
             for (int i = 0; i < mCustomers.size(); i++) {
                 Customer customer = mCustomers.get(i);
-                Log.d(TAG, "Customer:" + customer.getName()+"  id= "+customer.getId());
+                Log.d(TAG, "Customer:" + customer.getName() + "  id= " + customer.getId());
             }
         }
     }
@@ -179,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
         LogUtils.d("添加数据成功:" + insert);
         mName.setText("");
         mAge.setText("");
-        mMyAdapter.add(customer,0);
+        mMyAdapter.add(customer, 0);
         mRecycleview.scrollToPosition(0);
     }
 
@@ -210,4 +234,5 @@ public class MainActivity extends AppCompatActivity {
         }
         mInputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
     }
+
 }
