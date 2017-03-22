@@ -109,6 +109,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
     }
 
+    public void update(int position){
+        notifyDataSetChanged();
+        updateData(position);
+    }
+
     private void updateData(int position) {
         mLayoutPosition = -1;
         //更改状态

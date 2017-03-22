@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private List<Customer> mCustomers;
     private MyAdapter mMyAdapter;
     private long mKeyId = -1;
-    private int mDeletePosition = -1;
+    private int mSelectPosition = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
             public void OnItemClick(int position,long keyId) {
                 LogUtils.d("keyId = "+keyId);
                 mKeyId = keyId;
-                mDeletePosition = position;
+                mSelectPosition = position;
             }
         });
 
@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
                 checkEdit();
                 break;
             case R.id.update:
+                updateData();
                 break;
             case R.id.query:
                 queryData();
@@ -115,16 +116,48 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * 更新数据
+     */
+    private void updateData() {
+
+        if (TextUtils.isEmpty(mName.getText())) {
+            ToastUtils.SimpleToast("姓名不能为空!");
+            return;
+        }
+
+        if (TextUtils.isEmpty(mAge.getText())) {
+            ToastUtils.SimpleToast("年龄不能为空!");
+            return;
+        }
+
+        if(mSelectPosition < 0 || mMyAdapter.getLayoutPosition() < 0){
+            ToastUtils.SimpleToast("请选中需要删除的条目");
+            return;
+        }
+        Customer customer = mCustomerDao.load(mKeyId);
+        customer.setName(mName.getText().toString());
+        customer.setAge(Integer.parseInt(mAge.getText().toString()));
+        mCustomerDao.update(customer);
+        mMyAdapter.update(mSelectPosition);
+    }
+
+    /**
+     * 删除数据
+     */
     private void deleteData() {
-        LogUtils.d("position = "+mDeletePosition+",keyId = "+mKeyId);
-        if(mDeletePosition < 0 || mMyAdapter.getLayoutPosition() < 0){
+        LogUtils.d("position = "+ mSelectPosition +",keyId = "+mKeyId);
+        if(mSelectPosition < 0 || mMyAdapter.getLayoutPosition() < 0){
             ToastUtils.SimpleToast("请选中需要删除的条目");
             return;
         }
         mCustomerDao.deleteByKey(mKeyId);
-        mMyAdapter.delete(mDeletePosition);
+        mMyAdapter.delete(mSelectPosition);
     }
 
+    /**
+     * 查询数据
+     */
     private void queryData() {
         mCustomers = mCustomerDao.loadAll();
         if (mCustomers != null && mCustomers.size() > 0) {
@@ -135,6 +168,25 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    /**
+     * 添加数据
+     */
+    private void insertData() {
+        int age = Integer.parseInt(mAge.getText().toString());
+        Customer customer = new Customer(null, mName.getText().toString(), mGender, age);
+        long insert = mCustomerDao.insert(customer);
+        LogUtils.d("添加数据成功:" + insert);
+        mName.setText("");
+        mAge.setText("");
+        mMyAdapter.add(customer,0);
+        mRecycleview.scrollToPosition(0);
+    }
+
+
+    /**
+     * 检验数据
+     */
     private void checkEdit() {
         if (TextUtils.isEmpty(mName.getText())) {
             ToastUtils.SimpleToast("姓名不能为空!");
@@ -149,17 +201,9 @@ public class MainActivity extends AppCompatActivity {
         insertData();
     }
 
-    private void insertData() {
-        int age = Integer.parseInt(mAge.getText().toString());
-        Customer customer = new Customer(null, mName.getText().toString(), mGender, age);
-        long insert = mCustomerDao.insert(customer);
-        LogUtils.d("添加数据成功:" + insert);
-        mName.setText("");
-        mAge.setText("");
-        mMyAdapter.add(customer,0);
-        mRecycleview.scrollToPosition(0);
-    }
-
+    /**
+     * 隐藏键盘
+     */
     protected void hideKeyBoard() {
         if (mInputMethodManager == null) {
             mInputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
