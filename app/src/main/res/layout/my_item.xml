@@ -1,18 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/tv_item"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+              android:layout_height="wrap_content"
+              android:background="@drawable/bg_select"
+              android:padding="15px"
+              android:orientation="horizontal">
 
     <TextView
-        android:background="@drawable/bg_select"
-        android:id="@+id/tv_item"
-        android:layout_marginTop="5dp"
-        android:drawableLeft="@mipmap/ic_launcher"
-        android:layout_width="wrap_content"
+        android:id="@+id/tv_name"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="123456"
-        android:textSize="25dp" />
+        android:layout_weight="1"
+        android:text="姓名:11"
+        android:textSize="25sp"/>
+
+    <TextView
+        android:id="@+id/tv_age"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="年龄:12"
+        android:textSize="25sp"/>
+
+    <TextView
+        android:id="@+id/tv_gender"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="性别:男"
+        android:textSize="25sp"/>
+
+    <TextView
+        android:id="@+id/tv_id"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="id:12"
+        android:textSize="25sp"/>
 
 
 </LinearLayout>

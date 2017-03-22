@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.zmm.multygreendao.R;
@@ -71,10 +72,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         //更改状态
         if(position == mLayoutPosition){
             holder.tv_item.setBackgroundResource(R.drawable.bg_unselect);
-            holder.tv_item.setTextColor(Color.RED);
         }else{
             holder.tv_item.setBackgroundResource(R.drawable.bg_select);
-            holder.tv_item.setTextColor(Color.BLUE);
         }
     }
 
@@ -115,21 +114,24 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         //更改状态
         if(position == mLayoutPosition){
             mMyViewHolder.tv_item.setBackgroundResource(R.drawable.bg_unselect);
-            mMyViewHolder.tv_item.setTextColor(Color.RED);
         }else{
             mMyViewHolder.tv_item.setBackgroundResource(R.drawable.bg_select);
-            mMyViewHolder.tv_item.setTextColor(Color.BLUE);
         }
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder{
 
-        private final TextView tv_item;
+        private final LinearLayout tv_item;
+        private TextView tv_name,tv_age,tv_gender,tv_id;
 
         public MyViewHolder(View itemView) {
             super(itemView);
 
-            tv_item = (TextView) itemView.findViewById(R.id.tv_item);
+            tv_item = (LinearLayout) itemView.findViewById(R.id.tv_item);
+            tv_name = (TextView) itemView.findViewById(R.id.tv_name);
+            tv_age = (TextView) itemView.findViewById(R.id.tv_age);
+            tv_gender = (TextView) itemView.findViewById(R.id.tv_gender);
+            tv_id = (TextView) itemView.findViewById(R.id.tv_id);
         }
 
         /**
@@ -138,7 +140,16 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
          */
         public void setData(int position) {
             itemView.setTag(position);
-            tv_item.setText(mCustomers.get(position).getName());
+            Customer customer = mCustomers.get(position);
+            boolean sex = customer.getSex();
+            String gender = "女";
+            if(sex){
+                gender = "男";
+            }
+            tv_name.setText("姓名:"+customer.getName());
+            tv_age.setText("年龄:"+customer.getAge());
+            tv_gender.setText("性别:"+gender);
+            tv_id.setText("id:"+customer.getId());
         }
     }
 
