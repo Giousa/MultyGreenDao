@@ -78,10 +78,6 @@ public class MainActivity extends AppCompatActivity {
 
         mCustomers = mCustomerDao.loadAll();
 
-        if (mCustomers == null || mCustomers.size() == 0) {
-            return;
-        }
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecycleview.setLayoutManager(layoutManager);
@@ -203,6 +199,7 @@ public class MainActivity extends AppCompatActivity {
         LogUtils.d("添加数据成功:" + insert);
         mName.setText("");
         mAge.setText("");
+
         mMyAdapter.add(customer, 0);
         mRecycleview.scrollToPosition(0);
     }
